@@ -46,7 +46,7 @@ cout << num_e;  //输出5
 ```
 
 
-- 顶层const指针可以赋值给非常量指针对象
+- 顶层const可以赋值给非常量指针对象
 ```c++
 int num_e = 4;
 int *const p_e = &num_e;
@@ -55,9 +55,11 @@ int * p_d = p_e;   //正确：可以将顶层const的值赋值给非常量指针
 
 
 int num_c = 10;
-const int *const p_l = &num_c;
-int *p_x = p_l; //正确
-*p_l = 1000; //错误：不能修改
+const int *const p_l = &num_c; //靠右的const是顶层，靠左的是底层
+int *p = p_l //错误: p_l包含底层const的定义，而p没有
+*p_l = 100; //错误:不能修改
+const int *q = p_l; //正确：q和p_l都是底层const
+int *const pp = p_l; //错误:pp是顶层const，而p_l是底层const
 ```
 
 - 底层const不能赋值给顶层const
@@ -66,12 +68,23 @@ int i = 10;
 int const *ppp = &i;
 int *const q = ppp; //错误
 ```
+
 - 顶层const能赋值给底层const
 ```c++
 int i = 10;
 int *const q = &i;
 int const *ptr = q;
 ```
+
+- 用于声明和引用的const都是底层const
+```c++
+const int &r = i;  //底层const
+```
+
+> 总结:
+>> **顶层const可以赋给非常量，底层const**
+>> **底层const不能赋值给非底层const**      
+
 
 ## 练习
 - 说了这么多，应该练习一下，const int *const *const *pppi 是顶层const还是底层const？
